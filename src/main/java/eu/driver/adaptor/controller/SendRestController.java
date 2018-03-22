@@ -48,7 +48,7 @@ public class SendRestController implements ResourceProcessor<RepositoryLinksReso
 	@ApiOperation(value = "sendXMLMessage", nickname = "sendXMLMessage")
 	@RequestMapping(value = "/CISRestAdaptor/sendXMLMessage/{type}", method = RequestMethod.POST, consumes = {"appication/xml"} )
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "type", value = "the type of the xml content", required = true, dataType = "string", paramType = "path", allowableValues="CAP"),
+        @ApiImplicitParam(name = "type", value = "the type of the xml content", required = true, dataType = "string", paramType = "path", allowableValues="CAP, MLP, GEOJSON"),
         @ApiImplicitParam(name = "cgorName", value = "name of the cgor, if not provided, default public distribution group is used", required = false, dataType = "string", paramType = "query"),
         @ApiImplicitParam(name = "xmlMsg", value = "the XML message as string", required = true, dataType = "string", paramType = "body", example="<Alert></Alert>")
       })
@@ -72,9 +72,11 @@ public class SendRestController implements ResourceProcessor<RepositoryLinksReso
 			
 		} else if (type.equalsIgnoreCase("MLP")) {
 			log.info("Processing MLP message.");
+			avroRecord = avroMapper.convertMlpToAvro(xmlMsg);
 			
-		} else if (type.equalsIgnoreCase("EMSI")) {
+		} else if (type.equalsIgnoreCase("GEOJSON")) {
 			log.info("Processing EMSI message.");
+			avroRecord = avroMapper.convertGeoJsonToAvro(xmlMsg);
 			
 		}
 		

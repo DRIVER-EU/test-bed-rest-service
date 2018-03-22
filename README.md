@@ -1,5 +1,5 @@
-# REST Endpoint Adaptor
-This standalone DRIVER+ Adaptor provides an REST Endpoint for sending standard message (e.g. CAP, MLP) via the JAVA Testbed Adator.
+# REST Endpoint Adapter
+This standalone DRIVER+ Adapter provides an REST Endpoint for sending standard message (e.g. CAP, MLP) via the JAVA Testbed Adapter.
 The standard message can be validated before sending it to the CIS. This mechanism can be configured in the Adaptor properties. If the parameter is not specified no validation is performed.
 It offers two possibilities for retrieving messages back:
 REST Endpoint: can be configured in the adaptor properties or by passing it via a REST Endpoint
@@ -12,7 +12,7 @@ WebSocket: established by the client, adaptor is sending the message via this so
 * maven
 * xml-json-to-avro-mapper
 
-# Run the Adaptor
+# Run the Adapter
 * run die CISRestAdapter class as java application
 
 ## DOCKER will be soon available
