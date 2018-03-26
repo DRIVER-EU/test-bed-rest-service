@@ -1,5 +1,7 @@
 package eu.driver.adaptor.controller;
 
+import java.util.Date;
+
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 
@@ -27,6 +29,8 @@ import eu.driver.adapter.core.CISAdapter;
 import eu.driver.adapter.excpetion.CommunicationException;
 import eu.driver.adaptor.callback.AdapterCallback;
 import eu.driver.adaptor.mapper.cap.XMLToAVROMapper;
+import eu.driver.model.core.Level;
+import eu.driver.model.core.Log;
 
 @RestController
 public class SendRestController implements ResourceProcessor<RepositoryLinksResource> {
@@ -48,7 +52,7 @@ public class SendRestController implements ResourceProcessor<RepositoryLinksReso
 	@ApiOperation(value = "sendXMLMessage", nickname = "sendXMLMessage")
 	@RequestMapping(value = "/CISRestAdaptor/sendXMLMessage/{type}", method = RequestMethod.POST, consumes = {"appication/xml"} )
 	@ApiImplicitParams({
-        @ApiImplicitParam(name = "type", value = "the type of the xml content", required = true, dataType = "string", paramType = "path", allowableValues="CAP, MLP, GEOJSON"),
+        @ApiImplicitParam(name = "type", value = "the type of the xml content", required = true, dataType = "string", paramType = "path", allowableValues="CAP, MLP, GEOJSON, EMSI"),
         @ApiImplicitParam(name = "cgorName", value = "name of the cgor, if not provided, default public distribution group is used", required = false, dataType = "string", paramType = "query"),
         @ApiImplicitParam(name = "xmlMsg", value = "the XML message as string", required = true, dataType = "string", paramType = "body", example="<Alert></Alert>")
       })
@@ -97,6 +101,34 @@ public class SendRestController implements ResourceProcessor<RepositoryLinksReso
 		
 		log.info("sendXMLMessage -->");
 		return new ResponseEntity<Response>(response, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "sendLogMsg", nickname = "sendLogMsg")
+	@RequestMapping(value = "/CISRestAdaptor/sendLogMsg/", method = RequestMethod.POST )
+	@ApiImplicitParams({
+        @ApiImplicitParam(name = "level", value = "level of the log record", required = true, dataType = "string", paramType = "query", allowableValues="DEBUG, INFO, WARN, ERROR, CRITICAL, SILLY"),
+        @ApiImplicitParam(name = "message", value = "level of the log record", required = true, dataType = "string", paramType = "body")
+      })
+	@ApiResponses(value = { 
+            @ApiResponse(code = 200, message = "Success", response = Boolean.class),
+            @ApiResponse(code = 400, message = "Bad Request", response = Boolean.class),
+            @ApiResponse(code = 500, message = "Failure", response = Boolean.class)})
+	@Produces({"application/json"})
+	public ResponseEntity<Boolean> sendLogMsg( 	@QueryParam("level") String level,
+												@RequestBody String message) {
+		log.info("--> sendLogMsg");
+		Boolean send = true;
+		
+		Log logMsg = new Log();
+		logMsg.setDateTimeSent(new Date().getTime());
+		logMsg.setId(adapter.getClientID());
+		logMsg.setLevel(Level.valueOf(level));
+		logMsg.setLog(message);
+		
+		adapter.addLogEntry(logMsg);
+			
+		log.info("sendLogMsg -->");
+	    return new ResponseEntity<Boolean>(send, HttpStatus.OK);
 	}
 
 
