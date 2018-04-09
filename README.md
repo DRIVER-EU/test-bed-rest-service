@@ -15,26 +15,29 @@ WebSocket: established by the client, adaptor is sending the message via this so
 # Run the Adapter
 * run die CISRestAdapter class as java application
 
+## Executable
+* run the REST Service by calling the bat file in the executable directory
+
 ## DOCKER will be soon available
 * Run docker container
 
 # Swagger Interface for testing
 The REST Adapter offers for testing purposes a swagger ui where all exposed methods can be tested.
 The SWAGER UI can be reached by:
-*http://localhost:8190/swagger-ui.html
+* http://localhost:8190/swagger-ui.html
 
 # REST Endpoint callback
 If the application wants to get the received messages via a RESTEndpoint (provided by the application), this can
 be configured by sending the URL to the addRESTEndpoint:
 
 ## Example Request http POST to
-http://localhost:8090/CISRestAdaptor/addRESTEndpoint?url=http%3A%2F%2Flocalhost%3A8090%2FrestCallbackEndpoint
+http://localhost:8190/CISRestAdaptor/addRESTEndpoint?url=http%3A%2F%2Flocalhost%3A8090%2FrestCallbackEndpoint
 
-e.g.:curl -X POST "http://localhost:8090/CISRestAdaptor/addRESTEndpoint?url=http%3A%2F%2Flocalhost%3A8090%2FrestCallbackEndpoint" -H "accept: */*"
+e.g.:curl -X POST "http://localhost:8190/CISRestAdaptor/addRESTEndpoint?url=http%3A%2F%2Flocalhost%3A8090%2FrestCallbackEndpoint" -H "accept: */*"
 
 # WS callback
 An alternative way of getting the received messages is a websocket communication.
-This is the prio1 way for communication, if you sepcific both, the websocket will be used.
+This is the prio1 way for communication, if you specify both, the websocket will be used.
 
 WS endpoint:
 ws://localhost:8190/RESTAdaptorWSEndpoint
@@ -59,10 +62,10 @@ to check if the connection is up and running, a regular heartbeat has to be send
 
 ## Default values
 ### application.properties
-*server.port = 8190
+* server.port = 8190
 
 ### client.properties
-*client.id=any unique id
+* client.id=any unique id
 
 Be sure the the id you are using is unique
 
