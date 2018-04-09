@@ -8,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
-import eu.driver.adaptor.ws.WebSocketServer;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
@@ -21,11 +20,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class CISRestAdaptor {
 
 	private Logger log = Logger.getLogger(this.getClass());
-	private Boolean restEndpointAvailable = false;
-	private Boolean wsEndpointAvailable = false;
-	
-	private WebSocketServer wsServer = null;
-	
+
 	public CISRestAdaptor() throws Exception {
 		log.info("Init. CISRestAdaptor");
 	}
