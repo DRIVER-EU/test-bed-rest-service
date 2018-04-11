@@ -70,3 +70,9 @@ Be sure the the id you are using is unique
 ## Specific Configuration
 
 If you wish to override default configuration values you can do so in the configuration files in the 'config' directory.
+
+## Trial 1 specific "Data Update Tool"
+**Goal:** provide an easy way of notifying others that there is data available for which it would not be feasible to send it over the test-bed
+**Solution:** a simple tool, consisting of only one REST endpoint (http://localhost:8190/CISRestAdaptor/sendLargeDataUpdateJson) and a basic UI
+The UI provides a form where the location of the data (an URL) as well as the data type and a title must be filled in. Optionally, a description might be entered.
+**HowTo:** To use it just run the rest-testbed-adapter-1.0.3.jar that can be find in the executable folder.

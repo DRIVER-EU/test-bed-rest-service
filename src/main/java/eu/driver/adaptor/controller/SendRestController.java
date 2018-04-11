@@ -13,6 +13,7 @@ import io.swagger.annotations.ApiResponses;
 
 import org.apache.avro.generic.GenericRecord;
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -172,6 +173,34 @@ public class SendRestController implements
 		}
 		
 		log.info("sendLargeDataUpdate -->");
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "sendLargeDataUpdateJson", nickname = "sendLargeDataUpdateJson")
+	@RequestMapping(value = "/CISRestAdaptor/sendLargeDataUpdateJson", method = RequestMethod.POST)
+	@Produces({ "application/json" })
+	public ResponseEntity<Boolean> sendLargeDataUpdateJson( @RequestBody String requestJson ) {
+		System.out.println(requestJson);
+		log.info("--> sendLargeDataUpdateJson");
+
+		try {
+			JSONObject json = new JSONObject(requestJson);
+			LargeDataUpdate largeData = new LargeDataUpdate();
+			largeData.setUrl(json.getString("url"));
+			largeData.setDataType(DataType.valueOf(json.getString("dataType")));
+			largeData.setTitle(json.getString("title"));
+			largeData.setDescription(json.getString("description"));
+			
+			adapter.sendMessage(largeData);
+		} catch (CommunicationException cEx) {
+			log.error("Error sending large data update message!", cEx);
+			return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception Ex) {
+			log.error("Error sending large data update message!", Ex);
+			return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		log.info("sendLargeDataUpdateJson -->");
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
 	
