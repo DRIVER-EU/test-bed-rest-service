@@ -132,15 +132,27 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.1</version>
 				<configuration>
-					<source />
-					<target />
+					<configuration>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+								<mainClass>eu.driver.admin.CISRestAdaptor</mainClass>
+							</manifest>
+						</archive>
+					</configuration>
 				</configuration>
 			</plugin>
-			<!-- plugin> <groupId>com.spotify</groupId> <artifactId>dockerfile-maven-plugin</artifactId> 
-				<version>1.0.0</version> <executions> <execution> <id>default</id> <goals> 
-				<goal>build</goal> <goal>push</goal> </goals> </execution> </executions> 
-				<configuration> <repository>driver.eu</repository> <tag>0.0.1</tag> <buildArgs> 
-				<JAR_FILE>RESTAdapter.jar</JAR_FILE> </buildArgs> </configuration> </plugin -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>repackage</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>com.dkanejs.maven.plugins</groupId>
 				<artifactId>docker-compose-maven-plugin</artifactId>
