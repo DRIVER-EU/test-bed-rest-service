@@ -92,18 +92,18 @@ The UI provides a form where the location of the data (an URL) as well as the da
 
 This tool will notify the Testbed about a very specific event, hence, the "target" Testbed parameters must be set as follows:
 
-File \test-bed-rest-service-master\config\producer.properties:
+File \test-bed-rest-service-master\executable\config\producer.properties:
 
 - bootstrap.servers=<TESTBED_SOCKET>
 - schema.registry.url=<URL>
   
-File \test-bed-rest-service-master\config\consumer.propierties:
+File \test-bed-rest-service-master\executable\config\consumer.propierties:
   
 -	bootstrap.servers=<TESTBED_SOCKET>
 -	schema.registry.url=<SCHEMA_URL>
 -	group.id=<CLIENT_ID>
 
-File \test-bed-rest-service-master\config\client.properties:
+File \test-bed-rest-service-master\executable\config\client.properties:
 -	client.id=<CLIENT_ID>
 
 *Being:*
