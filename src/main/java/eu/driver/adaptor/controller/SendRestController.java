@@ -61,7 +61,7 @@ public class SendRestController implements
 	}
 
 	@ApiOperation(value = "sendXMLMessage", nickname = "sendXMLMessage")
-	@RequestMapping(value = "/CISRestAdaptor/sendXMLMessage/{type}", method = RequestMethod.POST, consumes = { "appication/xml" })
+	@RequestMapping(value = "/CISRestAdaptor/sendXMLMessage/{type}", method = RequestMethod.POST, consumes = { "application/xml" })
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "type", value = "the type of the xml content", required = true, dataType = "string", paramType = "path", allowableValues = "CAP, MLP, GEOJSON, EMSI"),
 			@ApiImplicitParam(name = "cgorName", value = "name of the cgor, if not provided, default public distribution group is used", required = false, dataType = "string", paramType = "query"),

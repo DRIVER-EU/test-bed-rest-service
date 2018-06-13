@@ -12,7 +12,7 @@ public class AdapterCallback implements IAdaptorCallback {
 	
 	@Override
 	public void messageReceived(IndexedRecord key, IndexedRecord message) {
-		log.info("-->messageReceived");
+		log.info("-->messageReceived: " + message);
 		
 		CallbackController.getInstance().sendMessage(message.toString());
 		
