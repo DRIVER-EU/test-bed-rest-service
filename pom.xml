@@ -4,7 +4,7 @@
 
 	<groupId>driver.eu</groupId>
 	<artifactId>rest-testbed-adapter</artifactId>
-	<version>1.0.5</version>
+	<version>1.0.6</version>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -33,13 +33,17 @@
 		<maven.compiler.version>3.7.0</maven.compiler.version>
 		<dockerfile-maven-version>1.0.0</dockerfile-maven-version>
 	</properties>
-	
-	<!-- configuration>
-		<composeFile>${project.basedir}/rest-adapter-docker-compose.yml</composeFile>
-	</configuration -->
+
+	<!-- configuration> <composeFile>${project.basedir}/rest-adapter-docker-compose.yml</composeFile> 
+		</configuration -->
 
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/com.spotify/docker-maven-plugin -->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.0</version>
+		</dependency>
 		<dependency>
 			<groupId>com.spotify</groupId>
 			<artifactId>docker-maven-plugin</artifactId>
@@ -122,7 +126,7 @@
 		<dependency>
 			<groupId>driver.eu</groupId>
 			<artifactId>xml-json-to-avro-mapper</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.3</version>
 		</dependency>
 	</dependencies>
 

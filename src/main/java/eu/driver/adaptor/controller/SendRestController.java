@@ -58,6 +58,8 @@ public class SendRestController implements
 	public SendRestController() {
 		this.adapter.addCallback(new AdapterCallback(),
 				TopicConstants.STANDARD_TOPIC_CAP);
+		this.adapter.addCallback(new AdapterCallback(),
+				TopicConstants.STANDARD_TOPIC_EMSI);
 	}
 
 	@ApiOperation(value = "sendXMLMessage", nickname = "sendXMLMessage")
@@ -88,9 +90,12 @@ public class SendRestController implements
 			avroRecord = avroMapper.convertMlpToAvro(xmlMsg);
 
 		} else if (type.equalsIgnoreCase("GEOJSON")) {
-			log.info("Processing EMSI message.");
+			log.info("Processing GEOJSON message.");
 			avroRecord = avroMapper.convertGeoJsonToAvro(xmlMsg);
 
+		} else if (type.equalsIgnoreCase("EMSI")) {
+			log.info("Processing EMSI message.");
+			avroRecord = avroMapper.convertEMSIToAvro(xmlMsg);
 		}
 
 		if (avroRecord != null) {
