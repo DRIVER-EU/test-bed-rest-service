@@ -74,42 +74,38 @@ Be sure the the id you are using is unique
 
 If you wish to override default configuration values you can do so in the configuration files in the 'config' directory.
 
-# Trial 1 specific "Data Update Tool"
-## Goal:
+## Configuration
 
-To provide an easy way of notifying others that there is data available for which it would not be feasible to send it over the test-bed.
+###Default Consumer Properties
+* bootstrap.servers=broker.url
+* group.id=<client.id> from the client-config.properties files
+* enable.auto.commit=true
+* auto.offset.reset=latest
+* key.deserializer=io.confluent.kafka.serializers.KafkaAvroDeserializer
+* value.deserializer=io.confluent.kafka.serializers.KafkaAvroDeserializer
+* schema.registry.url=schema.url
 
-## Solution:
+###Default Consumer Properties
+* bootstrap.servers=broker.url
+* schema.registry.url=schema.url
+* compression.type=none
+* acks=all
+* retries=retry.count
+* request.timeout.ms= retry.time
+* key.serializer=io.confluent.kafka.serializers.KafkaAvroSerializer
+* value.serializer=io.confluent.kafka.serializers.KafkaAvroSerializer
 
-A simple tool, consisting of only one REST endpoint (http://localhost:8190/CISRestAdaptor/sendLargeDataUpdateJson) and a basic UI
-The UI provides a form where the location of the data (an URL) as well as the data type and a title must be filled in. Optionally, a description might be entered.
+## Authentication Configuration
+If the Testbed is running in seucred mode, the adapter needs to identify with a certificate. This certificate has to be stored and the needed information have to be provided in the ssl.properties file. The adapter will automatically detect if ssl is needed.
+* security.protocol=SSL
+* ssl.truststore.location=config/cert/truststore.jks
+* ssl.truststore.type=JKS
+* ssl.truststore.password=changeit
+* ssl.keystore.location=config/cert/test_new.p12
+* ssl.keystore.type=PKCS12
+* ssl.keystore.password=test
+* ssl.key.password=test
 
-## HowTo:
-
-#### Configuration
-
-*Initial configuration:*
-
-This tool will notify the Testbed about a very specific event, hence, the "target" Testbed parameters must be set as follows:
-
-File \test-bed-rest-service-master\executable\config\producer.properties:
-
-- bootstrap.servers=<TESTBED_SOCKET>
-- schema.registry.url=<URL>
-  
-File \test-bed-rest-service-master\executable\config\consumer.propierties:
-  
--	bootstrap.servers=<TESTBED_SOCKET>
--	schema.registry.url=<SCHEMA_URL>
--	group.id=<CLIENT_ID>
-
-File \test-bed-rest-service-master\executable\config\client.properties:
--	client.id=<CLIENT_ID>
-
-*Being:*
- <TESTBED_SOCKET>, the testbed socket point in socket format (IP:port)
- <SCHEMA_URL>, the testbed schema url address in URL format (http://IP:port)
- <CLIENT_ID>, client_id defined in the testbed configuration where the app points out.
 
 #### Run the REST adapter
 
