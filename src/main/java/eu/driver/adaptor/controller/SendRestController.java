@@ -1,5 +1,8 @@
 package eu.driver.adaptor.controller;
 
+import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
+import java.io.InputStream;
 import java.util.Date;
 
 import javax.ws.rs.Produces;
@@ -11,8 +14,15 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.DecoderFactory;
 import org.apache.log4j.Logger;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +47,9 @@ import eu.driver.model.core.Level;
 import eu.driver.model.core.Log;
 import eu.driver.model.core.MapLayerUpdate;
 import eu.driver.model.core.UpdateType;
+import eu.driver.model.geojson.Feature;
+import eu.driver.model.geojson.FeatureCollection;
+import eu.driver.model.geojson.FeatureType;
 
 @RestController
 public class SendRestController implements
@@ -145,6 +158,40 @@ public class SendRestController implements
 		log.info("sendLogMsg -->");
 		return new ResponseEntity<Boolean>(send, HttpStatus.OK);
 	}
+	
+	@ApiOperation(value = "sendGeoJson", nickname = "sendGeoJson")
+	@RequestMapping(value = "/CISRestAdaptor/sendGeoJson", method = RequestMethod.POST)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "cgorName", value = "name of the cgor, if not provided, default public distribution group is used", required = false, dataType = "string", paramType = "query"),
+		@ApiImplicitParam(name = "requestJson", value = "the XML message as string", required = true, dataType = "string", paramType = "body") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = Boolean.class),
+			@ApiResponse(code = 400, message = "Bad Request", response = Boolean.class),
+			@ApiResponse(code = 500, message = "Failure", response = Boolean.class) })
+	@Produces({ "application/json" })
+	public ResponseEntity<Boolean> sendGeoJson(@QueryParam("cgorName") String cgorName, @RequestBody String requestJson ) {
+		System.out.println(requestJson);
+		log.info("--> sendGeoJson");
+
+		try {
+			InputStream input = new ByteArrayInputStream(requestJson.getBytes());
+			DataInputStream din = new DataInputStream(input);
+			Schema parsedSchema = FeatureCollection.SCHEMA$;
+			Decoder decoder = DecoderFactory.get().jsonDecoder(parsedSchema, din);
+		    DatumReader<GenericData.Record> reader = new GenericDatumReader(parsedSchema);
+			adapter.sendMessage(reader.read(null, decoder), cgorName);
+		} catch (CommunicationException cEx) {
+			log.error("Error sending large data update message!", cEx);
+			return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception Ex) {
+			log.error("Error sending large data update message!", Ex);
+			return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		log.info("sendGeoJson -->");
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+	}
+	
 
 	@ApiOperation(value = "sendLargeDataUpdate", nickname = "sendLargeDataUpdate")
 	@RequestMapping(value = "/CISRestAdaptor/sendLargeDataUpdate/", method = RequestMethod.POST)
