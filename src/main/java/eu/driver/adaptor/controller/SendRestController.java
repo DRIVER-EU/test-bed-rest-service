@@ -69,10 +69,10 @@ public class SendRestController implements
 	}
 
 	public SendRestController() {
-		this.adapter.addCallback(new AdapterCallback(),
+		/*this.adapter.addCallback(new AdapterCallback(TopicConstants.STANDARD_TOPIC_CAP),
 				TopicConstants.STANDARD_TOPIC_CAP);
-		this.adapter.addCallback(new AdapterCallback(),
-				TopicConstants.STANDARD_TOPIC_EMSI);
+		this.adapter.addCallback(new AdapterCallback(TopicConstants.STANDARD_TOPIC_EMSI),
+				TopicConstants.STANDARD_TOPIC_EMSI);*/
 	}
 
 	@ApiOperation(value = "sendXMLMessage", nickname = "sendXMLMessage")
@@ -297,6 +297,16 @@ public class SendRestController implements
 		}
 		
 		log.info("sendMapLayerUpdate -->");
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+	}
+	
+	public ResponseEntity<Boolean> subscribeOnTopic(@QueryParam("topic") String topic) {
+		log.info("--> subscribeOnTopic");
+		
+		this.adapter.addCallback(new AdapterCallback(topic),
+				topic);
+		
+		log.info("subscribeOnTopic -->");
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
 

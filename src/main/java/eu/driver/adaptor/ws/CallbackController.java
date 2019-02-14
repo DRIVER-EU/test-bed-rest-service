@@ -7,6 +7,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.log4j.Logger;
+import org.json.JSONObject;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -41,10 +42,19 @@ public class CallbackController {
 		log.info("setRestEndpointUrl-->");
 	}
 	
-	public void sendMessage(String msg) {
+	public void sendMessage(String topic, String msg) {
 		log.info("--> sendMessage");
 		log.debug(msg);
-		TextMessage responseMsg = new TextMessage(msg);
+		
+		JSONObject responseJson = new JSONObject();
+		try {
+			responseJson.put("topic", topic);
+			responseJson.put("payload", msg);	
+		} catch (Exception e) {
+			log.error("Error creating the notification message!");
+		}
+		
+		TextMessage responseMsg = new TextMessage(responseJson.toString());
 		try {
 			if (session != null && session.isOpen()) {
 				session.sendMessage(responseMsg);
