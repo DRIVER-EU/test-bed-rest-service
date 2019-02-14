@@ -300,6 +300,14 @@ public class SendRestController implements
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "subscribeOnTopic", nickname = "subscribeOnTopic")
+	@RequestMapping(value = "/CISRestAdaptor/subscribeOnTopic/", method = RequestMethod.POST)
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "topic", value = "the name of the topic to which you want to subscribe", required = true, dataType = "string", paramType = "query") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = Boolean.class),
+			@ApiResponse(code = 400, message = "Bad Request", response = Boolean.class),
+			@ApiResponse(code = 500, message = "Failure", response = Boolean.class) })
 	public ResponseEntity<Boolean> subscribeOnTopic(@QueryParam("topic") String topic) {
 		log.info("--> subscribeOnTopic");
 		
