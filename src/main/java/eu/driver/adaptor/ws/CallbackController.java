@@ -59,7 +59,7 @@ public class CallbackController {
 			if (session != null && session.isOpen()) {
 				session.sendMessage(responseMsg);
 			} else if (restEndpointUrl != null) {
-				sendMessagetoRESTEndpoint(msg);
+				sendMessagetoRESTEndpoint(responseJson.toString());
 			}
 		} catch (IOException e) {
 			log.error("Error sending the notification!");
