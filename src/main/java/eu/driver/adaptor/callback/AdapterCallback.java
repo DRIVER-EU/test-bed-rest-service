@@ -1,6 +1,7 @@
 package eu.driver.adaptor.callback;
 
 import org.apache.avro.generic.IndexedRecord;
+import org.apache.avro.specific.SpecificData;
 import org.apache.log4j.Logger;
 
 import eu.driver.adaptor.ws.CallbackController;
@@ -18,8 +19,8 @@ public class AdapterCallback implements IAdaptorCallback {
 	@Override
 	public void messageReceived(IndexedRecord key, IndexedRecord message) {
 		log.info("-->messageReceived: " + message);
-		
-		CallbackController.getInstance().sendMessage(topicName, message.toString());
+		eu.driver.model.edxl.EDXLDistribution msgKey = (eu.driver.model.edxl.EDXLDistribution) SpecificData.get().deepCopy(eu.driver.model.edxl.EDXLDistribution.SCHEMA$, key);
+		CallbackController.getInstance().sendMessage(topicName, msgKey.getSenderID().toString(), message.toString());
 		
 		log.info("messageReceived-->");
 	}
