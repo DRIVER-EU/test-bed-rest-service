@@ -311,7 +311,7 @@ public class SendRestController implements
 	public ResponseEntity<Boolean> subscribeOnTopic(@QueryParam("topic") String topic) {
 		log.info("--> subscribeOnTopic");
 		
-		this.adapter.addCallback(new AdapterCallback(topic),
+		this.adapter.addCallback(new AdapterCallback(),
 				topic);
 		
 		log.info("subscribeOnTopic -->");

@@ -4,7 +4,7 @@
 
 	<groupId>driver.eu</groupId>
 	<artifactId>rest-testbed-adapter</artifactId>
-	<version>1.2.4</version>
+	<version>1.2.5</version>
 	<packaging>jar</packaging>
 
 	<parent>
@@ -18,17 +18,27 @@
 
 	<repositories>
 		<repository>
-			<id>central</id>
-			<url>http://central.maven.org/maven2/</url>
+			<id>apache-repo</id>
+			<name>Apache Repository</name>
+			<url>https://repository.apache.org/content/repositories/releases</url>
 		</repository>
-		<!-- repository> <id>apache-repo</id> <name>Apache Repository</name> <url>https://repository.apache.org/content/repositories/releases</url> 
-			</repository> <repository> <id>confluent</id> <url>http://packages.confluent.io/maven/</url> 
-			</repository -->
+		<repository>
+			<id>confluent</id>
+			<url>http://packages.confluent.io/maven/</url>
+		</repository>
+		<repository>
+			<id>driver-mvn-repo</id>
+			<url>https://raw.github.com/DRIVER-EU/maven-repo/master/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+			</snapshots>
+		</repository>
 	</repositories>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<testbed.adaptor.version>1.2.3</testbed.adaptor.version>
+		<testbed.adaptor.version>1.2.7</testbed.adaptor.version>
 		<maven.shade.version>3.1.0</maven.shade.version>
 		<maven.compiler.version>3.7.0</maven.compiler.version>
 		<dockerfile-maven-version>1.0.0</dockerfile-maven-version>

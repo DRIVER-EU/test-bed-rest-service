@@ -2,12 +2,18 @@ package eu.driver.adaptor;
 
 import static springfox.documentation.builders.PathSelectors.regex;
 
+import java.util.Arrays;
+import java.util.StringTokenizer;
+
 import org.apache.log4j.Logger;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
+import eu.driver.adapter.core.CISAdapter;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
@@ -26,6 +32,17 @@ public class CISRestAdaptor {
 	}
 	
 	public static void main(String[] args) throws Exception {
+		if (args.length > 0) {
+			System.out.println("CISRestAdapter started with command-line arguments: " + Arrays.toString(args));
+			for (String arg : args) {
+				if (arg.indexOf("-config") != -1) {
+					StringTokenizer tokenizer = new StringTokenizer(arg, "=");
+					String token = tokenizer.nextToken();
+					CISAdapter.globalConfigPath = tokenizer.nextToken();
+				}
+			}
+			System.out.println("ConfigPath = " + CISAdapter.globalConfigPath);
+		}
 		SpringApplication.run(CISRestAdaptor.class, args);
     }
 	
