@@ -312,8 +312,7 @@ public class SendRestController implements
 		log.info("--> subscribeOnTopic");
 		
 		if (this.registeredTopics.get(topic) == null) {
-			this.adapter.addCallback(new AdapterCallback(), topic);	
-		} else {
+			this.adapter.addCallback(new AdapterCallback(), topic);
 			this.registeredTopics.put(topic, topic);
 		}
 		
