@@ -4,6 +4,8 @@ import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
@@ -22,7 +24,6 @@ import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.Decoder;
 import org.apache.avro.io.DecoderFactory;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,7 +36,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import eu.driver.adapter.constants.TopicConstants;
 import eu.driver.adapter.core.CISAdapter;
 import eu.driver.adapter.excpetion.CommunicationException;
 import eu.driver.adaptor.callback.AdapterCallback;
@@ -47,9 +47,7 @@ import eu.driver.model.core.Level;
 import eu.driver.model.core.Log;
 import eu.driver.model.core.MapLayerUpdate;
 import eu.driver.model.core.UpdateType;
-import eu.driver.model.geojson.Feature;
 import eu.driver.model.geojson.FeatureCollection;
-import eu.driver.model.geojson.FeatureType;
 
 @RestController
 public class SendRestController implements
@@ -58,6 +56,8 @@ public class SendRestController implements
 	private Logger log = Logger.getLogger(this.getClass());
 	private XMLToAVROMapper avroMapper = new XMLToAVROMapper();
 	private CISAdapter adapter = CISAdapter.getInstance();
+	
+	private Map<String, String> registeredTopics = new HashMap<String, String>();
 
 	@Override
 	public RepositoryLinksResource process(RepositoryLinksResource resource) {
@@ -311,8 +311,11 @@ public class SendRestController implements
 	public ResponseEntity<Boolean> subscribeOnTopic(@QueryParam("topic") String topic) {
 		log.info("--> subscribeOnTopic");
 		
-		this.adapter.addCallback(new AdapterCallback(),
-				topic);
+		if (this.registeredTopics.get(topic) == null) {
+			this.adapter.addCallback(new AdapterCallback(), topic);	
+		} else {
+			this.registeredTopics.put(topic, topic);
+		}
 		
 		log.info("subscribeOnTopic -->");
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
