@@ -58,6 +58,22 @@ to check if the connection is up and running, a regular heartbeat has to be send
   "state" : "OK"
 }
 
+# Topic subscription for receiving messages
+In order to receive messages from different topics, you need to subscribe on them. This can be done via the REST Endpoint:
+
+## subscribeOnTopic
+http://localhost:8190/CISRestAdaptor/subscribeOnTopic?topic=<topicName>
+
+## JSON format of received message:
+When a message is received on a subscribed topic it will be enveloped into a JOSN structure and forwareded to the client via the registered Callback (REST) or via the WebSocket connection:
+{
+	"header": {
+				"topic": <topicName of the received message>,
+				"senderId": <clientId of the sending solution>
+			  },
+	"payload", <the received message>
+}
+
 # Configuration
 
 ## Default values
@@ -111,7 +127,7 @@ If the Testbed is running in seucred mode, the adapter needs to identify with a 
 
 Then, run the .bat file or the java command inside:
 
-\test-bed-rest-service-master\executable>java -jar rest-testbed-adapter-1.0.3.jar
+\test-bed-rest-service-master\executable>java -jar rest-testbed-adapter-1.2.6.jar
 
 #### Usage of the form
 
