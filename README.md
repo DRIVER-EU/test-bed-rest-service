@@ -129,7 +129,21 @@ Then, run the .bat file or the java command inside:
 
 \test-bed-rest-service-master\executable>java -jar rest-testbed-adapter-1.2.6.jar
 
-#### Usage of the form
+# Step by Step
+## start the adapter:
+ \executable>java -jar rest-testbed-adapter-1.2.6.jaras soon as the adapter is up
 
-Once it is running, they should be able to open the url http://localhost:8190/
-Then the notification form should appear.
+## you have 2 options to receive messages:
+* register a REST Endpoint callback: http://localhost:8190/CISRestAdaptor/addRESTEndpoint?url=<URL to the endpoint> or * connect to the WebSocket and run the heartbeat protocol to keep the Websocket upNext step is, 
+
+## you need to subscribe to the topics from which you want to receive messages
+* http://localhost:8190/CISRestAdaptor/subscribeOnTopic?topic=<topicName>
+
+without this, you will not receive any messages. As soon as you receive a message you will get a json message (on the REST or the WebSocket) which detailed information and the message itself
+{
+    "header": {
+    	          "topic": <topicName of the received message>,
+    	          "senderId": <clientId of the sending solution>
+    	      },
+    "payload", <the received message>
+}
