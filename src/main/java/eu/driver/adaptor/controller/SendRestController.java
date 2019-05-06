@@ -133,7 +133,7 @@ public class SendRestController implements
 	}
 
 	@ApiOperation(value = "sendLogMsg", nickname = "sendLogMsg")
-	@RequestMapping(value = "/CISRestAdaptor/sendLogMsg/", method = RequestMethod.POST)
+	@RequestMapping(value = "/CISRestAdaptor/sendLogMsg", method = RequestMethod.POST)
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "level", value = "level of the log record", required = true, dataType = "string", paramType = "query", allowableValues = "DEBUG, INFO, WARN, ERROR, CRITICAL, SILLY"),
 			@ApiImplicitParam(name = "message", value = "level of the log record", required = true, dataType = "string", paramType = "body") })
@@ -153,7 +153,11 @@ public class SendRestController implements
 		logMsg.setLevel(Level.valueOf(level));
 		logMsg.setLog(message);
 
-		adapter.addLogEntry(logMsg);
+		try {
+			adapter.addLogEntry(logMsg);
+		} catch (CommunicationException e) {
+			log.error("Error sending the log request!");
+		}
 
 		log.info("sendLogMsg -->");
 		return new ResponseEntity<Boolean>(send, HttpStatus.OK);
@@ -192,9 +196,42 @@ public class SendRestController implements
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "sendPhotoGeoJson", nickname = "sendPhotoGeoJson")
+	@RequestMapping(value = "/CISRestAdaptor/sendPhotoGeoJson", method = RequestMethod.POST)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "cgorName", value = "name of the cgor, if not provided, default public distribution group is used", required = false, dataType = "string", paramType = "query"),
+		@ApiImplicitParam(name = "requestJson", value = "the XML message as string", required = true, dataType = "string", paramType = "body") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = Boolean.class),
+			@ApiResponse(code = 400, message = "Bad Request", response = Boolean.class),
+			@ApiResponse(code = 500, message = "Failure", response = Boolean.class) })
+	@Produces({ "application/json" })
+	public ResponseEntity<Boolean> sendPhotoGeoJson(@QueryParam("cgorName") String cgorName, @RequestBody String requestJson ) {
+		System.out.println(requestJson);
+		log.info("--> sendPhotoGeoJson");
+
+		try {
+			InputStream input = new ByteArrayInputStream(requestJson.getBytes());
+			DataInputStream din = new DataInputStream(input);
+			Schema parsedSchema = eu.driver.model.geojson.photo.FeatureCollection.SCHEMA$;
+			Decoder decoder = DecoderFactory.get().jsonDecoder(parsedSchema, din);
+		    DatumReader<GenericData.Record> reader = new GenericDatumReader(parsedSchema);
+			adapter.sendMessage(reader.read(null, decoder), cgorName);
+		} catch (CommunicationException cEx) {
+			log.error("Error sending large data update message!", cEx);
+			return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception Ex) {
+			log.error("Error sending large data update message!", Ex);
+			return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		log.info("sendPhotoGeoJson -->");
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+	}
+	
 
 	@ApiOperation(value = "sendLargeDataUpdate", nickname = "sendLargeDataUpdate")
-	@RequestMapping(value = "/CISRestAdaptor/sendLargeDataUpdate/", method = RequestMethod.POST)
+	@RequestMapping(value = "/CISRestAdaptor/sendLargeDataUpdate", method = RequestMethod.POST)
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "url", value = "the path where the data can be downloaded", required = true, dataType = "string", paramType = "query"),
 			@ApiImplicitParam(name = "dataType", value = "the data type of the data", required = true, dataType = "string", paramType = "query", allowableValues = "msword, ogg, pdf, excel, powerpoint, zip, audio_mpeg, audio_vorbis, image_bmp, image_gif, image_geotiff, image_jpeg, image_png, json, geojson, text_plain, video_mpeg, video_msvideo, video_avi, other"),
@@ -257,7 +294,7 @@ public class SendRestController implements
 	}
 	
 	@ApiOperation(value = "sendMapLayerUpdate", nickname = "sendMapLayerUpdate")
-	@RequestMapping(value = "/CISRestAdaptor/sendMapLayerUpdate/", method = RequestMethod.POST)
+	@RequestMapping(value = "/CISRestAdaptor/sendMapLayerUpdate", method = RequestMethod.POST)
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "url", value = "the path where the data can be downloaded", required = true, dataType = "string", paramType = "query"),
 			@ApiImplicitParam(name = "title", value = "the title of the update message", required = true, dataType = "string", paramType = "query"),
@@ -301,7 +338,7 @@ public class SendRestController implements
 	}
 	
 	@ApiOperation(value = "subscribeOnTopic", nickname = "subscribeOnTopic")
-	@RequestMapping(value = "/CISRestAdaptor/subscribeOnTopic/", method = RequestMethod.POST)
+	@RequestMapping(value = "/CISRestAdaptor/subscribeOnTopic", method = RequestMethod.POST)
 	@ApiImplicitParams({
 			@ApiImplicitParam(name = "topic", value = "the name of the topic to which you want to subscribe", required = true, dataType = "string", paramType = "query") })
 	@ApiResponses(value = {
