@@ -51,8 +51,7 @@ public class CallbackController {
 		try {
 			msgJson = new JSONObject(msg);
 		} catch (JSONException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			log.error("Error create message JSON object!");
 		}
 		JSONObject responseJson = new JSONObject();
 		try {

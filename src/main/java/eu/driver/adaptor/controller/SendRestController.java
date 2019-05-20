@@ -48,6 +48,7 @@ import eu.driver.model.core.Log;
 import eu.driver.model.core.MapLayerUpdate;
 import eu.driver.model.core.UpdateType;
 import eu.driver.model.geojson.FeatureCollection;
+import eu.driver.model.geojson.GeoJSONEnvelope;
 
 @RestController
 public class SendRestController implements
@@ -193,6 +194,39 @@ public class SendRestController implements
 		}
 		
 		log.info("sendGeoJson -->");
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+	}
+	
+	@ApiOperation(value = "sendNamedGeoJson", nickname = "sendNamedGeoJson")
+	@RequestMapping(value = "/CISRestAdaptor/sendNamedGeoJson", method = RequestMethod.POST)
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "cgorName", value = "name of the cgor, if not provided, default public distribution group is used", required = false, dataType = "string", paramType = "query"),
+		@ApiImplicitParam(name = "requestJson", value = "the XML message as string", required = true, dataType = "string", paramType = "body") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = Boolean.class),
+			@ApiResponse(code = 400, message = "Bad Request", response = Boolean.class),
+			@ApiResponse(code = 500, message = "Failure", response = Boolean.class) })
+	@Produces({ "application/json" })
+	public ResponseEntity<Boolean> sendNamedGeoJson(@QueryParam("cgorName") String cgorName, @RequestBody String requestJson ) {
+		System.out.println(requestJson);
+		log.info("--> sendNamedGeoJson");
+
+		try {
+			InputStream input = new ByteArrayInputStream(requestJson.getBytes());
+			DataInputStream din = new DataInputStream(input);
+			Schema parsedSchema = GeoJSONEnvelope.SCHEMA$;
+			Decoder decoder = DecoderFactory.get().jsonDecoder(parsedSchema, din);
+		    DatumReader<GenericData.Record> reader = new GenericDatumReader(parsedSchema);
+			adapter.sendMessage(reader.read(null, decoder), cgorName);
+		} catch (CommunicationException cEx) {
+			log.error("Error sending large data update message!", cEx);
+			return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception Ex) {
+			log.error("Error sending large data update message!", Ex);
+			return new ResponseEntity<Boolean>(false, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		log.info("sendNamedGeoJson -->");
 		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
 	
