@@ -121,7 +121,13 @@ public class SendRestController implements
 		if (avroRecord != null) {
 			try {
 				log.info(avroRecord.toString());
-				adapter.sendMessage(avroRecord);
+				if (cgorName == null) {
+					log.info("Send Message to default topic!");
+					adapter.sendMessage(avroRecord);	
+				} else {
+					log.info("Send Message to topic: " + cgorName);
+					adapter.sendMessage(avroRecord, cgorName);
+				}
 				response.setMessage("The message was send successfully!");
 			} catch (CommunicationException cEx) {
 				log.error("Error sending the record!", cEx);
