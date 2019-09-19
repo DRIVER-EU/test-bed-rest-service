@@ -97,7 +97,7 @@ public class SendRestController implements
 		// check message type
 		if (type.equalsIgnoreCase("CAP")) {
 			log.info("Processing CAP message.");
-			boolean valid = avroMapper.validateCAP(xmlMsg);
+			boolean valid = true;//avroMapper.validateCAP(xmlMsg);
 			if (valid) {
 				avroRecord = avroMapper.convertCapToAvro(xmlMsg);	
 			} else {
