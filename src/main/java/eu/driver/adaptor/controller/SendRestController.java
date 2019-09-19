@@ -97,8 +97,14 @@ public class SendRestController implements
 		// check message type
 		if (type.equalsIgnoreCase("CAP")) {
 			log.info("Processing CAP message.");
-			avroRecord = avroMapper.convertCapToAvro(xmlMsg);
-
+			boolean valid = avroMapper.validateCAP(xmlMsg);
+			if (valid) {
+				avroRecord = avroMapper.convertCapToAvro(xmlMsg);	
+			} else {
+				response.setMessage("CAP message not valid!");
+				return new ResponseEntity<Response>(response,
+						HttpStatus.BAD_REQUEST);
+			}
 		} else if (type.equalsIgnoreCase("MLP")) {
 			log.info("Processing MLP message.");
 			avroRecord = avroMapper.convertMlpToAvro(xmlMsg);
@@ -114,6 +120,7 @@ public class SendRestController implements
 
 		if (avroRecord != null) {
 			try {
+				log.info(avroRecord.toString());
 				adapter.sendMessage(avroRecord);
 				response.setMessage("The message was send successfully!");
 			} catch (CommunicationException cEx) {
