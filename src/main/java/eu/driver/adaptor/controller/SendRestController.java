@@ -177,6 +177,37 @@ public class SendRestController implements
 		return new ResponseEntity<Boolean>(send, HttpStatus.OK);
 	}
 	
+	@ApiOperation(value = "sendEvalLogMsg", nickname = "sendEvalLogMsg")
+	@RequestMapping(value = "/CISRestAdaptor/sendEvalLogMsg", method = RequestMethod.POST)
+	@ApiImplicitParams({
+			@ApiImplicitParam(name = "level", value = "level of the log record", required = true, dataType = "string", paramType = "query", allowableValues = "DEBUG, INFO, WARN, ERROR, CRITICAL, SILLY"),
+			@ApiImplicitParam(name = "message", value = "level of the log record", required = true, dataType = "string", paramType = "body") })
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Success", response = Boolean.class),
+			@ApiResponse(code = 400, message = "Bad Request", response = Boolean.class),
+			@ApiResponse(code = 500, message = "Failure", response = Boolean.class) })
+	@Produces({ "application/json" })
+	public ResponseEntity<Boolean> sendEvalLogMsg(
+			@QueryParam("level") String level, @RequestBody String message) {
+		log.info("--> sendEvalLogMsg");
+		Boolean send = true;
+
+		Log logMsg = new Log();
+		logMsg.setDateTimeSent(new Date().getTime());
+		logMsg.setId(adapter.getClientID());
+		logMsg.setLevel(Level.valueOf(level));
+		logMsg.setLog(message);
+
+		try {
+			adapter.addEvaluationLogEntry(logMsg);
+		} catch (CommunicationException e) {
+			log.error("Error sending the evaluation log request!");
+		}
+
+		log.info("sendEvalLogMsg -->");
+		return new ResponseEntity<Boolean>(send, HttpStatus.OK);
+	}
+	
 	@ApiOperation(value = "sendGeoJson", nickname = "sendGeoJson")
 	@RequestMapping(value = "/CISRestAdaptor/sendGeoJson", method = RequestMethod.POST)
 	@ApiImplicitParams({
