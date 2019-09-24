@@ -1,1 +1,1 @@
-"%JAVA_HOME%\bin\java" -jar rest-testbed-adapter-1.2.12.jar
+"%JAVA_HOME%\bin\java" -jar rest-testbed-adapter-1.2.13.jar
